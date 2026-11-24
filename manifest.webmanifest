@@ -1,0 +1,13 @@
+{
+  "name": "Oppslag",
+  "short_name": "Oppslag",
+  "description": "Norsk telefonkatalog – offline-først",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f3eee6",
+  "theme_color": "#f3eee6",
+  "lang": "nb",
+  "icons": [
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

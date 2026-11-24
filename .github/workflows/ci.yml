@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Match tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Run match engine tests
+        run: node test/match.test.js
+
+      - name: Check required files
+        run: |
+          test -f index.html
+          test -f js/match.js
+          test -f js/book.js
+          test -f js/brreg.js
+          test -f js/app.js
+          test -f css/styles.css
+          test -f manifest.webmanifest
+          test -f sw.js
+          echo "All core files present"
+
+  validate:
+    name: Static check
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+      - name: HTML has required IDs
+        run: |
+          grep -q 'id="q"' index.html
+          grep -q 'id="results"' index.html
+          grep -q 'OppslagMatch' js/match.js
+          grep -q 'searchFirms' js/brreg.js
+          echo "Structure OK"
